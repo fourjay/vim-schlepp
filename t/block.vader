@@ -1,0 +1,24 @@
+Given (text):
+  test  second
+  test  second
+  test  second
+
+Do:
+  3jV
+  \<Plug>SchleppDown
+
+Expect:
+  test  second
+  test  second
+
+  test  second
+
+Do:
+  w\<c-v>ejj
+  \<Plug>SchleppDown
+
+Expect:
+  test
+  test  second
+  test  second
+        second
