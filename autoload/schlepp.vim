@@ -10,14 +10,14 @@ function! s:schlepp#lines(dir, reindent)
     if a:dir ==? 'up' "{{{ Up
         if l:fline == 1 "First lines of file, move everything else down
             call append(l:lline, '')
-            call s:ResetSelection()
+            call schlepp#reset_selection()
         else
             execute "normal! :'<,'>m'<-2\<CR>" . l:reindent_cmd . 'gv'
         endif "}}}
     elseif a:dir ==? 'down' "{{{ Down
         if l:lline == line('$') "Moving down past EOF
             call append(l:fline - 1, '')
-            call s:ResetSelection()
+            call schlepp#reset_selection()
         else
             execute "normal! :'<,'>m'>+1\<CR>" . l:reindent_cmd . 'gv'
         endif "}}}
@@ -33,7 +33,7 @@ function! s:schlepp#lines(dir, reindent)
                 endif
             endfor
         endif
-        call s:ResetSelection() "}}}
+        call schlepp#reset_selection() "}}}
     elseif a:dir ==? 'left' "{{{ Left
         if g:Schlepp#useShiftWidthLines
             normal! gv<
@@ -42,7 +42,7 @@ function! s:schlepp#lines(dir, reindent)
                 call setline(l:linenum, substitute(getline(l:linenum), "^\\s", '', ''))
             endfor
         endif
-        call s:ResetSelection()
+        call schlepp#reset_selection()
     endif "}}}
 endfunction "}}}
 
@@ -128,3 +128,16 @@ endfunction "}}}
 function! schlepp#reset_selection() abort
     execute "normal! \<Esc>gv"
 endfunction
+
+function! schlepp#reset_selection()
+    execute "normal! \<Esc>gv"
+endfunction
+
+function! s:SchleppToggleReindent()
+    if g:Schlepp#reindent == 0
+        let g:Schlepp#reindent = 1
+    else
+        let g:Schlepp#reindent = 0
+    endif
+    call schlepp#reset_selection()
+endfunction "}}}
