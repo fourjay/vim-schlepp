@@ -3,7 +3,7 @@ Given (text):
   test  second
   test  second
 
-Do:
+Do (test line down):
   3jV
   \<Plug>SchleppDown
 
@@ -13,7 +13,7 @@ Expect:
 
   test  second
 
-Do:
+Do (block down):
   w\<c-v>ejj
   \<Plug>SchleppDown
 
@@ -22,3 +22,12 @@ Expect:
   test  second
   test  second
         second
+
+Do (visual block right):
+  w\<c-v>ejj
+  \<Plug>SchleppRight
+
+Expect:
+  test   second
+  test   second
+  test   second
