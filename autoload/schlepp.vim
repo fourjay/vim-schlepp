@@ -1,4 +1,53 @@
 
+#function! s:Schlepp(dir, ...) range
+function! schlepp#schlepp(dir, ...) range
+"  The main function that acts as an entrant function to be called by the user
+"  with a desired direction to move the seleceted text.
+"  TODO:
+"       Work with a count specifier eg. [count]<Up> moves lines count times
+"       Maybe: Make word with a motion
+
+    "Avoid errors in read-only buffers
+    if ! &modifiable
+        echo 'Read only buffer'
+        call schlepp#reset_selection()
+        return
+    endif
+    "Get what visual mode was being used
+    normal! gv
+    let l:md = mode()
+    execute "normal! \<Esc>"
+
+    "Safe return if unsupported
+    "TODO: Make this work in visual mode
+    if l:md ==# 'v'
+        "Give them back their selection
+        call schlepp#reset_selection()
+    endif
+
+    "Branch off into specilized functions for each mode, check for undojoin
+    if l:md ==# 'V'
+        "Reindent if necessary
+        if a:0 >= 1
+            let l:reindent = a:1
+        else
+            let l:reindent = g:Schlepp#reindent
+        endif
+
+        if s:CheckUndo(l:md)
+            undojoin | schlepp#lines(a:dir, l:reindent)
+        else
+            call schlepp#lines(a:dir, l:reindent)
+        endif
+    elseif l:md ==# ''
+        if s:CheckUndo(l:md)
+            undojoin | call schlepp#block(a:dir)
+        else
+            call schlepp#block(a:dir)
+        endif
+    endif
+endfunction "}}}
+
 function! s:schlepp#lines(dir, reindent)
 "  Logic for moving text selected with visual line mode
 

@@ -35,10 +35,10 @@ noremap <unique> <script> <Plug>SchleppDown <SID>SchleppDown
 noremap <unique> <script> <Plug>SchleppLeft <SID>SchleppLeft
 noremap <unique> <script> <Plug>SchleppRight <SID>SchleppRight
 
-noremap <SID>SchleppUp    :call <SID>Schlepp("Up")<CR>
-noremap <SID>SchleppDown  :call <SID>Schlepp("Down")<CR>
-noremap <SID>SchleppLeft  :call <SID>Schlepp("Left")<CR>
-noremap <SID>SchleppRight :call <SID>Schlepp("Right")<CR>
+noremap <SID>SchleppUp    :call schlepp#schlepp("Up")<CR>
+noremap <SID>SchleppDown  :call schlepp#schlepp("Down")<CR>
+noremap <SID>SchleppLeft  :call schlepp#schlepp("Left")<CR>
+noremap <SID>SchleppRight :call schlepp#schlepp("Right")<CR>
 
 "Reindent Mappings
 "These are only done on VisualLine Mode
@@ -46,58 +46,11 @@ noremap <unique> <script> <Plug>SchleppIndentUp       <SID>SchleppIndentUp
 noremap <unique> <script> <Plug>SchleppIndentDown     <SID>SchleppIndentDown
 noremap <unique> <script> <Plug>SchleppToggleReindent schlepp#toggle_reindent()
 
-noremap <SID>SchleppIndentUp       :call <SID>Schlepp("Up", 1)<CR>
-noremap <SID>SchleppIndentDown     :call <SID>Schlepp("Down", 1)<CR>
+noremap <SID>SchleppIndentUp       :call schlepp#schlepp("Up", 1)<CR>
+noremap <SID>SchleppIndentDown     :call schlepp#schlepp("Down", 1)<CR>
 noremap <SID>SchleppToggleReindent :call schlepp#toggle_reindent<CR>
 "}}}
 "{{{ s:Schlepp(dir, ...) range
-function! s:Schlepp(dir, ...) range
-"  The main function that acts as an entrant function to be called by the user
-"  with a desired direction to move the seleceted text.
-"  TODO:
-"       Work with a count specifier eg. [count]<Up> moves lines count times
-"       Maybe: Make word with a motion
-
-    "Avoid errors in read-only buffers
-    if ! &modifiable
-        echo 'Read only buffer'
-        call schlepp#reset_selection()
-        return
-    endif
-    "Get what visual mode was being used
-    normal! gv
-    let l:md = mode()
-    execute "normal! \<Esc>"
-
-    "Safe return if unsupported
-    "TODO: Make this work in visual mode
-    if l:md ==# 'v'
-        "Give them back their selection
-        call schlepp#reset_selection()
-    endif
-
-    "Branch off into specilized functions for each mode, check for undojoin
-    if l:md ==# 'V'
-        "Reindent if necessary
-        if a:0 >= 1
-            let l:reindent = a:1
-        else
-            let l:reindent = g:Schlepp#reindent
-        endif
-
-        if s:CheckUndo(l:md)
-            undojoin | schlepp#lines(a:dir, l:reindent)
-        else
-            call schlepp#lines(a:dir, l:reindent)
-        endif
-    elseif l:md ==# ''
-        if s:CheckUndo(l:md)
-            undojoin | call schlepp#block(a:dir)
-        else
-            call schlepp#block(a:dir)
-        endif
-    endif
-endfunction "}}}
 "{{{ s:SchleppLines(dir, reindent)
 "{{{ s:SchleppBlock(dir)
 "{{{ s:SchleppToggleReindent()
@@ -115,11 +68,11 @@ noremap <unique> <script> <Plug>SchleppDupLeft <SID>SchleppDupLeft
 noremap <unique> <script> <Plug>SchleppDupRight <SID>SchleppDupRight
 noremap <unique> <script> <Plug>SchleppDup <SID>SchleppDup
 
-noremap <SID>SchleppDupUp    :call <SID>SchleppDup("Up")<CR>
-noremap <SID>SchleppDupDown  :call <SID>SchleppDup("Down")<CR>
-noremap <SID>SchleppDupLeft  :call <SID>SchleppDup("Left")<CR>
-noremap <SID>SchleppDupRight :call <SID>SchleppDup("Right")<CR>
-noremap <SID>SchleppDup      :call <SID>SchleppDup()<CR>
+noremap <SID>SchleppDupUp    :call schlepp#schlepp("Up")<CR>
+noremap <SID>SchleppDupDown  :call schlepp#schlepp("Down")<CR>
+noremap <SID>SchleppDupLeft  :call schlepp#schlepp("Left")<CR>
+noremap <SID>SchleppDupRight :call schlepp#schlepp("Right")<CR>
+noremap <SID>SchleppDup      :call schlepp#schlepp()<CR>
 "}}}
 "{{{ s:SchleppDup(...) range
 function! s:SchleppDup(...) range
