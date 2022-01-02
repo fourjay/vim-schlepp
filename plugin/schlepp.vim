@@ -44,11 +44,11 @@ noremap <SID>SchleppRight :call <SID>Schlepp("Right")<CR>
 "These are only done on VisualLine Mode
 noremap <unique> <script> <Plug>SchleppIndentUp       <SID>SchleppIndentUp
 noremap <unique> <script> <Plug>SchleppIndentDown     <SID>SchleppIndentDown
-noremap <unique> <script> <Plug>SchleppToggleReindent <SID>SchleppToggleReindent
+noremap <unique> <script> <Plug>SchleppToggleReindent schlepp#toggle_reindent()
 
 noremap <SID>SchleppIndentUp       :call <SID>Schlepp("Up", 1)<CR>
 noremap <SID>SchleppIndentDown     :call <SID>Schlepp("Down", 1)<CR>
-noremap <SID>SchleppToggleReindent :call <SID>SchleppToggleReindent()<CR>
+noremap <SID>SchleppToggleReindent :call schlepp#toggle_reindent<CR>
 "}}}
 "{{{ s:Schlepp(dir, ...) range
 function! s:Schlepp(dir, ...) range
@@ -101,14 +101,6 @@ endfunction "}}}
 "{{{ s:SchleppLines(dir, reindent)
 "{{{ s:SchleppBlock(dir)
 "{{{ s:SchleppToggleReindent()
-function! s:SchleppToggleReindent()
-    if g:Schlepp#reindent == 0
-        let g:Schlepp#reindent = 1
-    else
-        let g:Schlepp#reindent = 0
-    endif
-    call schlepp#reset_selection()
-endfunction "}}}
 "}}}
 "{{{ Schlepp Duplication
 "{{{ User Config

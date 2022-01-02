@@ -133,7 +133,8 @@ function! schlepp#reset_selection()
     execute "normal! \<Esc>gv"
 endfunction
 
-function! s:SchleppToggleReindent()
+" function! s:SchleppToggleReindent()
+function! schlepp#toggle_reindent()
     if g:Schlepp#reindent == 0
         let g:Schlepp#reindent = 1
     else
