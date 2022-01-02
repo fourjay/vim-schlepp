@@ -86,9 +86,9 @@ function! s:Schlepp(dir, ...) range
         endif
 
         if s:CheckUndo(l:md)
-            undojoin | call s:SchleppLines(a:dir, l:reindent)
+            undojoin | schlepp#lines(a:dir, l:reindent)
         else
-            call s:SchleppLines(a:dir, l:reindent)
+            call schlepp#lines(a:dir, l:reindent)
         endif
     elseif l:md ==# ''
         if s:CheckUndo(l:md)
@@ -99,52 +99,6 @@ function! s:Schlepp(dir, ...) range
     endif
 endfunction "}}}
 "{{{ s:SchleppLines(dir, reindent)
-function! s:SchleppLines(dir, reindent)
-"  Logic for moving text selected with visual line mode
-
-    "build normal command string to reselect the VisualLine area
-    let l:fline = line("'<")
-    let l:lline = line("'>")
-    let l:reindent_cmd = (a:reindent ? 'gv=' : '')
-
-    if a:dir ==? 'up' "{{{ Up
-        if l:fline == 1 "First lines of file, move everything else down
-            call append(l:lline, '')
-            call s:ResetSelection()
-        else
-            execute "normal! :'<,'>m'<-2\<CR>" . l:reindent_cmd . 'gv'
-        endif "}}}
-    elseif a:dir ==? 'down' "{{{ Down
-        if l:lline == line('$') "Moving down past EOF
-            call append(l:fline - 1, '')
-            call s:ResetSelection()
-        else
-            execute "normal! :'<,'>m'>+1\<CR>" . l:reindent_cmd . 'gv'
-        endif "}}}
-    elseif a:dir ==? 'right' "{{{ Right
-        if g:Schlepp#useShiftWidthLines
-            normal! gv>
-        else
-            for l:linenum in range(l:fline, l:lline)
-                let l:line = getline(l:linenum)
-                "Only insert space if the line is not empty
-                if match(l:line, '^$') == -1
-                    call setline(l:linenum, ' '.l:line)
-                endif
-            endfor
-        endif
-        call s:ResetSelection() "}}}
-    elseif a:dir ==? 'left' "{{{ Left
-        if g:Schlepp#useShiftWidthLines
-            normal! gv<
-        elseif g:Schlepp#allowSquishingLines || match(getline(l:fline, l:lline), '^[^ \t]') == -1
-            for l:linenum in range(l:fline, l:lline)
-                call setline(l:linenum, substitute(getline(l:linenum), "^\\s", '', ''))
-            endfor
-        endif
-        call s:ResetSelection()
-    endif "}}}
-endfunction "}}}
 "{{{ s:SchleppBlock(dir)
 "{{{ s:SchleppToggleReindent()
 function! s:SchleppToggleReindent()

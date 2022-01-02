@@ -1,3 +1,51 @@
+
+function! s:schlepp#lines(dir, reindent)
+"  Logic for moving text selected with visual line mode
+
+    "build normal command string to reselect the VisualLine area
+    let l:fline = line("'<")
+    let l:lline = line("'>")
+    let l:reindent_cmd = (a:reindent ? 'gv=' : '')
+
+    if a:dir ==? 'up' "{{{ Up
+        if l:fline == 1 "First lines of file, move everything else down
+            call append(l:lline, '')
+            call s:ResetSelection()
+        else
+            execute "normal! :'<,'>m'<-2\<CR>" . l:reindent_cmd . 'gv'
+        endif "}}}
+    elseif a:dir ==? 'down' "{{{ Down
+        if l:lline == line('$') "Moving down past EOF
+            call append(l:fline - 1, '')
+            call s:ResetSelection()
+        else
+            execute "normal! :'<,'>m'>+1\<CR>" . l:reindent_cmd . 'gv'
+        endif "}}}
+    elseif a:dir ==? 'right' "{{{ Right
+        if g:Schlepp#useShiftWidthLines
+            normal! gv>
+        else
+            for l:linenum in range(l:fline, l:lline)
+                let l:line = getline(l:linenum)
+                "Only insert space if the line is not empty
+                if match(l:line, '^$') == -1
+                    call setline(l:linenum, ' '.l:line)
+                endif
+            endfor
+        endif
+        call s:ResetSelection() "}}}
+    elseif a:dir ==? 'left' "{{{ Left
+        if g:Schlepp#useShiftWidthLines
+            normal! gv<
+        elseif g:Schlepp#allowSquishingLines || match(getline(l:fline, l:lline), '^[^ \t]') == -1
+            for l:linenum in range(l:fline, l:lline)
+                call setline(l:linenum, substitute(getline(l:linenum), "^\\s", '', ''))
+            endfor
+        endif
+        call s:ResetSelection()
+    endif "}}}
+endfunction "}}}
+
 function! schlepp#block(dir) abort
 "  Logic for moving a visual block selection, this is much more complicated than
 "  lines since I have to be able to part text in order to insert the incoming
