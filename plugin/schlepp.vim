@@ -206,23 +206,6 @@ endfunction "}}}
 "}}}
 "{{{ Utility Functions
 "{{{ s:CheckUndo(md)
-function! s:CheckUndo(md)
-    if !exists('b:schleppState')
-        let b:schleppState = {}
-        let b:schleppState.lastNr = undotree().seq_last
-        let b:schleppState.lastMd = a:md
-        return 0
-    endif
-
-    if changenr() == undotree().seq_last && b:schleppState.lastNr == (changenr() - 1) &&  b:schleppState.lastMd == a:md
-        return 1
-    endif
-
-    "else
-    let b:schleppState.lastNr = undotree().seq_last
-    let b:schleppState.lastMd = a:md
-    return 0
-endfunction
 "}}}
 "{{{ s:ResetSelection()
 "}}}

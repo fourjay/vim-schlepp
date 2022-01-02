@@ -34,13 +34,13 @@ function! schlepp#schlepp(dir, ...) range
             let l:reindent = g:Schlepp#reindent
         endif
 
-        if s:CheckUndo(l:md)
+        if schlepp:CheckUndo(l:md)
             undojoin | schlepp#lines(a:dir, l:reindent)
         else
             call schlepp#lines(a:dir, l:reindent)
         endif
     elseif l:md ==# ''
-        if s:CheckUndo(l:md)
+        if schlepp:CheckUndo(l:md)
             undojoin | call schlepp#block(a:dir)
         else
             call schlepp#block(a:dir)
@@ -191,3 +191,21 @@ function! schlepp#toggle_reindent()
     endif
     call schlepp#reset_selection()
 endfunction "}}}
+
+function! schlepp#CheckUndo(md)
+    if !exists('b:schleppState')
+        let b:schleppState = {}
+        let b:schleppState.lastNr = undotree().seq_last
+        let b:schleppState.lastMd = a:md
+        return 0
+    endif
+
+    if changenr() == undotree().seq_last && b:schleppState.lastNr == (changenr() - 1) &&  b:schleppState.lastMd == a:md
+        return 1
+    endif
+
+    "else
+    let b:schleppState.lastNr = undotree().seq_last
+    let b:schleppState.lastMd = a:md
+    return 0
+endfunction
