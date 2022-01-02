@@ -61,7 +61,7 @@ function! s:Schlepp(dir, ...) range
     "Avoid errors in read-only buffers
     if ! &modifiable
         echo 'Read only buffer'
-        call s:ResetSelection()
+        call schlepp#reset_selection()
         return
     endif
     "Get what visual mode was being used
@@ -73,7 +73,7 @@ function! s:Schlepp(dir, ...) range
     "TODO: Make this work in visual mode
     if l:md ==# 'v'
         "Give them back their selection
-        call s:ResetSelection()
+        call schlepp#reset_selection()
     endif
 
     "Branch off into specilized functions for each mode, check for undojoin
@@ -107,7 +107,7 @@ function! s:SchleppToggleReindent()
     else
         let g:Schlepp#reindent = 0
     endif
-    call s:ResetSelection()
+    call schlepp#reset_selection()
 endfunction "}}}
 "}}}
 "{{{ Schlepp Duplication
@@ -136,7 +136,7 @@ function! s:SchleppDup(...) range
     "Avoid errors in read-only buffers
     if ! &modifiable
         echo 'Read only buffer'
-        call s:ResetSelection()
+        call schlepp#reset_selection()
         return
     endif
 
@@ -149,7 +149,7 @@ function! s:SchleppDup(...) range
     "TODO: Make this work in visual mode
     if l:md ==# 'v'
         "Give them back their selection
-        call s:ResetSelection()
+        call schlepp#reset_selection()
     endif
 
     "Branching to other functions for lines and blocks
@@ -164,7 +164,7 @@ function! s:SchleppDup(...) range
         if l:dir ==? 'up' || l:dir ==? 'down'
             call s:SchleppDupLines(l:dir)
         else
-            call s:ResetSelection()
+            call schlepp#reset_selection()
             echom 'Left and Right duplication not supported for lines'
         endif
     elseif l:md ==# ''
@@ -186,7 +186,7 @@ function! s:SchleppDupLines(dir)
     elseif a:dir ==? 'down'
         let l:reselect = "'[V']"
     else
-        call s:ResetSelection()
+        call schlepp#reset_selection()
         return
     endif
 
@@ -236,7 +236,7 @@ function! s:SchleppDupBlock(dir)
         elseif a:dir ==? 'right'
             normal! gvyPgv
         else
-            call s:ResetSelection()
+            call schlepp#reset_selection()
         endif
 
         "Strip Whitespace
@@ -280,9 +280,6 @@ function! s:CheckUndo(md)
 endfunction
 "}}}
 "{{{ s:ResetSelection()
-function! s:ResetSelection()
-    execute "normal! \<Esc>gv"
-endfunction
 "}}}
 "{{{ s:NrCmp(i1, i2)
 function! s:NrCmp(i1, i2)
